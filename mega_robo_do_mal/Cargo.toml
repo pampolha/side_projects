@@ -1,0 +1,16 @@
+[package]
+name = "mega_robo_do_mal"
+version = "0.1.0"
+authors = ["Gabriel Pampolha <contato.gabrielpampolha@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4"
+rand = "0.8.3"
+discord = { git = "https://github.com/SpaceManiac/discord-rs" }
+
+[[bin]]
+name = "discordbot"
+path = "main.rs"
