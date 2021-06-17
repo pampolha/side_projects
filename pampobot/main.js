@@ -3,36 +3,32 @@ const command = require('./commands');
 // pra esconder o token do bot em uma variável de ambiente
 require('dotenv').config();
 // criando um objeto a partir do package
-const { Client, Message } = require('discord.js');
+const { Client } = require('discord.js');
 // instanciando um objeto do tipo criado acima
 const client = new Client;
-// variável que contém o prefixo do bot pra uma manutenção mais eficiente
-const prefixo = '>';
 
 // login do bot com token
 client.login(process.env.BOT_TOKEN);
 
-// instanciando um objeto date pra fins de logging mais completo
-const horario = new Date;
+// quando o bot estiver no estado "ready"(online), vai logar uma mensagem no console
+client.on('ready', () => console.log(`${client.user.username} está online.`));
 
-// quando o bot estiver no estado "ready", vai logar uma mensagem no console
-client.on('ready', () => console.log(`[${horario.toUTCString()}] `+client.user.username+' está online.'));
-
-const commands = require('./commands');
-
-// logar um aviso de erro
-client.on('error', () => console.log(`Erro às [${horario.toUTCString()}]`));
-
-// logando todas as mensagens do bot e os comndos requeridos pelas pessoas
+// logando todas as mensagens diretas no privado do bot e todas as mensagens que começam com o prefixo do bot.
 client.on('message', msg =>
 {
-    if (msg.author.id === client.user.id || msg.content.startsWith(prefixo))
+    if (msg.channel.name === undefined)
     {
-        console.log(`${msg.author.username} disse: ${msg.content} em ${msg.channel.name}`);
+        console.log(`${msg.author.username} disse: "${msg.content}" no chat privado do bot`);
     }
-    switch (msg.content)
+    else if (msg.content.startsWith('>'))
+    {
+        console.log(`${msg.author.username} disse: "${msg.content}" no canal "${msg.channel.name}" do servidor "${msg.guild.name}"`);
+    }
+
+    switch (msg.content.toLowerCase())
     {
         case '>cc':
             msg.channel.send(`<@${msg.author.id}> jogou uma moeda, e o resultado foi: ***${command.cc()}!***`);
+            break;
     }
 });
