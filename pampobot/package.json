@@ -1,0 +1,20 @@
+{
+  "name": "pampobot",
+  "version": "1.0.0",
+  "description": "Fazendo meu segundo bot, meu primeiro projeto em node.js!",
+  "main": "main.js",
+  "scripts": {
+    "app": "node main",
+    "dev": "nodemon main"
+  },
+  "author": "Gabriel Pampolha: contato.gabrielpampolha@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "random": "^3.0.6"
+  }
+}
