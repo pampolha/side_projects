@@ -2,15 +2,19 @@
 const command = require('./commands');
 // pra esconder o token do bot em uma variável de ambiente
 require('dotenv').config();
-// declarando e instanciando um objeto Client do discord
+// declarando as classes que eu vou importar do discord.js
 const { Client } = require('discord.js');
-const client = new Client;
+const client = new Client();
 
 // login do bot com token
 client.login(process.env.BOT_TOKEN);
 
-// quando o bot estiver no estado "ready"(online), vai logar uma mensagem no console
-client.on('ready', () => console.log(`${client.user.username} está online.`));
+// quando o bot estiver no online, vai logar uma mensagem no console e setar um status personalizado
+client.on('ready', () => 
+{
+	console.log(`${client.user.username} está online.`);
+	client.user.setPresence({ status: 'online', activity: { name: '>help 🤖 || Não recebo mensagens no privado >:)', type: 'PLAYING' } });
+});
 
 // logando todas as mensagens que começam com o prefixo do bot. também bloqueando as mensagens que são enviadas no privado do bot
 client.on('message', mensagem => 
@@ -24,6 +28,9 @@ client.on('message', mensagem =>
 		console.log(`${mensagem.author.username} disse: "${mensagem.content}" no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}"`);
 	}
 
+	// a partir desse ponto, vou estar executando os comandos
+	command.assinatura(mensagem, mensagem.content);
+
 	if (mensagem.content.toLowerCase() === '>cc') 
     {
         command.cc(mensagem);
@@ -32,4 +39,15 @@ client.on('message', mensagem =>
     {
         command.out(mensagem, mensagem.content);
     }
+	else if (mensagem.content.toLowerCase().startsWith('>roll '))
+	{
+		command.roll(mensagem);
+	}
+	else if (mensagem.content.toLowerCase() === '>help')
+	{
+		command.help(mensagem);
+	}
 });
+
+// quando eu chegar no rate limit, vai ser logado a quantidade em segundos do timeout que eu levei
+client.on('rateLimit', info => console.log('RATE LIMITED! timeout em segundos: ' + (info.timeout / 1000)));
