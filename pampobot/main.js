@@ -33,19 +33,23 @@ client.on('message', mensagem =>
 
 	if (mensagem.content.toLowerCase() === '>cc') 
     {
-        command.cc(mensagem);
+        return command.cc(mensagem);
 	}
 	else if (mensagem.content.toLowerCase().startsWith('>out ')) 
     {
-        command.out(mensagem, mensagem.content);
+        return command.out(mensagem, mensagem.content);
     }
 	else if (mensagem.content.toLowerCase().startsWith('>roll '))
 	{
-		command.roll(mensagem);
+		return command.roll(mensagem);
 	}
 	else if (mensagem.content.toLowerCase() === '>help')
 	{
-		command.help(mensagem);
+		return command.help(mensagem);
+	}
+	else if (mensagem.content.toLowerCase() === '>jokenpo')
+	{
+		return command.jokenpo(mensagem);
 	}
 });
 
