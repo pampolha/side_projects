@@ -19,38 +19,36 @@ client.on('ready', () =>
 // logando todas as mensagens que começam com o prefixo do bot. também bloqueando as mensagens que são enviadas no privado do bot
 client.on('message', mensagem => 
 {
-	if (mensagem.channel.name === undefined) 
+	if (mensagem.channel.name === undefined || mensagem.author.bot === true) 
     {
 		return;
 	}
 	else if (mensagem.content.startsWith('>')) 
     {
 		console.log(`${mensagem.author.username} disse: "${mensagem.content}" no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}"`);
+		if (mensagem.content.toLowerCase() === '>cc') 
+		{
+			return command.cc(mensagem);
+		}
+		else if (mensagem.content.toLowerCase().startsWith('>out ')) 
+		{
+			return command.out(mensagem, mensagem.content);
+		}
+		else if (mensagem.content.toLowerCase().startsWith('>roll '))
+		{
+			return command.roll(mensagem);
+		}
+		else if (mensagem.content.toLowerCase() === '>help')
+		{
+			return command.help(mensagem);
+		}
+		else if (mensagem.content.toLowerCase() === '>jokenpo')
+		{
+			return command.jokenpo(mensagem);
+		}
 	}
-
-	// a partir desse ponto, vou estar executando os comandos
+	// reage com o emote 😈 quando a mensagem contém ">:)"
 	command.assinatura(mensagem, mensagem.content);
-
-	if (mensagem.content.toLowerCase() === '>cc') 
-    {
-        return command.cc(mensagem);
-	}
-	else if (mensagem.content.toLowerCase().startsWith('>out ')) 
-    {
-        return command.out(mensagem, mensagem.content);
-    }
-	else if (mensagem.content.toLowerCase().startsWith('>roll '))
-	{
-		return command.roll(mensagem);
-	}
-	else if (mensagem.content.toLowerCase() === '>help')
-	{
-		return command.help(mensagem);
-	}
-	else if (mensagem.content.toLowerCase() === '>jokenpo')
-	{
-		return command.jokenpo(mensagem);
-	}
 });
 
 // quando eu chegar no rate limit, vai ser logado a quantidade em segundos do timeout que eu levei

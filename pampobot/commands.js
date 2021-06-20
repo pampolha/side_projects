@@ -1,12 +1,5 @@
-// pra esconder o token do bot em uma variável de ambiente
-require('dotenv').config();
 // random vai ser usado pra gerar números randômicos (é....)
 const random = require('random');
-// declarando e instanciando um objeto Client do discord
-const { Client } = require('discord.js');
-const client = new Client();
-// login do bot com token
-client.login(process.env.BOT_TOKEN);
 
 class Commands 
 {
@@ -32,7 +25,7 @@ class Commands
         if (mensagem.deletable === true)
         {
             mensagem.delete()
-            .then(() => console.log(`Mensagem apagada no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}". Mensagem original: "${out}"`));
+            .then(() => console.log(`pampobot apagou uma mensagem no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}". Mensagem original: "${out}"`));
         }
         const regex = /<@!830117848034181211>/;
         const check = mensagem.content.match(regex);
@@ -49,12 +42,7 @@ class Commands
         if (mensagem.content.match(regex) !== null)
         {
             mensagem.react('😈');
-        }
-        const _regex = /<@!830117848034181211>/;
-        if (mensagem.content.match(_regex) && mensagem.author.bot === true)
-        {
-            mensagem.reply('`111110 111010 101001`');
-        }   
+        }  
     }
 
     static roll(mensagem)
@@ -67,8 +55,6 @@ class Commands
         const bruto = mensagem.content.substring(6);
 		const separado = bruto.split(regex, 2);
         const lado = parseInt(separado[0].trim(), 10);
-        console.log(separado);
-        console.log(separado.length);
         if (lado <= 0)
         {
              return invalido(mensagem);
@@ -118,7 +104,7 @@ class Commands
             '**>Cara ou coroa**: jogue uma moeda digitando `>cc`!\n' +
             '**>Dado**: jogue um dado com até um modificador digitando `>roll |num. lados| |"+,-,x,/"| |num. modificador|`!\n' +
             '**>Output**: posso imitar uma mensagem (e apagar a original, se eu tiver permissão) quando você digitar `>out |mensagem|`!\n' +
-            '**>Jokenpo**: vou jogar Jokenpo com você por 10 segundos ao digitar `>jokenpo`!\n' +
+            '**>Jokenpo**: vou jogar Jokenpo com você ao digitar `>jokenpo`!\n' +
             '***>converse com o dev! -> pampolha#0007***');
     }
 
@@ -126,49 +112,38 @@ class Commands
     {  
         function resultado(c_mensagem, user)
         {
+            const mao = numero =>
+            {
+                switch (numero) 
+                {
+                    case 1:
+                        return 'pedra';
+                    case 2:
+                        return 'papel';
+                    case 3:
+                        return 'tesoura';
+                }
+            } 
             const bot = random.int(1, 3);
-            let _user;
-            let _bot;
-            switch (user) 
+            const resultado = bot - user;
+            let _user = mao(user);
+            let _bot = mao(bot);
+            if (resultado === 0)
             {
-                case 1:
-                    _user = 'pedra';
-                    break;
-                case 2:
-                    _user = 'papel';
-                    break;
-                case 3:
-                    _user = 'tesoura';
-                    break;
+                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** Empate.`);
             }
-            switch (bot) 
+            else if (resultado === 1 || resultado === -2)
             {
-                case 1:
-                    _bot = 'pedra';
-                    break;
-                case 2:
-                    _bot = 'papel';
-                    break;
-                case 3:
-                    _bot = 'tesoura';
-                    break;
-            }
-            const _resultado = bot - user;
-            if (_resultado === 0)
-            {
-                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** Empate.`);
-            }
-            else if (_resultado === 1 || resultado === -2)
-            {
-                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** *e-eu perdi?!*`);
+                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** ***EU VENCI!***`);
             }
             else
             {
-                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** ***EU VENCI!***`);
+                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** *e-eu perdi?!*`);
             }
         }
+
         mensagem.reply('*eu aceito o seu desafio...*\n' +
-        'digite "pedra","papel" ou "tesoura" quando estiver pronto!');
+        '**>digite "pedra", "papel" ou "tesoura" quando estiver pronto!**');
         const filtro = msg => 
         {
             const teste = msg.content.match(/\bpedra\b|\bpapel\b|\btesoura\b/i);
@@ -185,8 +160,9 @@ class Commands
         {
             if (_mensagem.author.id === mensagem.author.id)
             {
+                const teste = _mensagem.content.match(/\bpedra\b|\bpapel\b|\btesoura\b/i);
                 let user;
-                switch (_mensagem.content)
+                switch (teste[0])
                 {
                     case 'pedra':
                         user = 1;
@@ -198,6 +174,7 @@ class Commands
                         user = 3;
                         break;
                 }
+                coletor.stop();
                 return resultado(_mensagem, user);
             }
         });
