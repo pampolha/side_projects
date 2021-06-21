@@ -1,5 +1,7 @@
 // random vai ser usado pra gerar números randômicos (é....)
 const random = require('random');
+// usando fs pra mostrar data armazenada na pasta 'data'
+const fs = require('fs');
 
 class Commands 
 {
@@ -123,18 +125,22 @@ class Commands
                     case 3:
                         return 'tesoura';
                 }
-            } 
+            }; 
             const bot = random.int(1, 3);
-            const resultado = bot - user;
-            let _user = mao(user);
-            let _bot = mao(bot);
-            if (resultado === 0)
+            const _resultado = bot - user;
+            const _user = mao(user);
+            const _bot = mao(bot);
+            if (_resultado === 0)
             {
                 c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** Empate.`);
             }
-            else if (resultado === 1 || resultado === -2)
+            else if (_resultado === 1 || _resultado === -2)
             {
-                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** ***EU VENCI!***`);
+                const antigo = fs.readFileSync('data/jokenpoWins.txt', 'utf-8');
+                const atual = (parseInt(antigo) + 1).toString(10);
+                fs.writeFileSync('data/jokenpoWins.txt', atual);
+                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** ***EU VENCI!***\n` + 
+                `> *Meu número de vitórias agora é:*  **${fs.readFileSync('data/jokenpoWins.txt')}!**`);
             }
             else
             {
