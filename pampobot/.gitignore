@@ -1,4 +1,5 @@
 *.env
 *.eslint*
 *node_modules
-/data
+*data
+*.gitignore
