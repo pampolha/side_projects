@@ -18,7 +18,7 @@ const { Help } = require('./commands/Help');
 const { Jokenpo } = require('./commands/Jokenpo');
 const { Roll } = require('./commands/Roll');
 const { Out } = require('./commands/Out');
-
+const { LoremIpsum } = require('./commands/LoremIpsum');
 
 // usando o prefixo como uma variável pra facilitar a manutenção
 const prefix = '>';
@@ -46,13 +46,15 @@ client.on('message', mensagem =>
 		console.log(`${mensagem.author.username} disse: "${mensagem.content}" no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}"`);
 
 		const argumentos = mensagem.content.slice(prefix.length).split(/\s+/);
-		const comando = argumentos.shift().toLowerCase();
+		const comando = argumentos.shift().toLowerCase().trim();
 
-		if (comando.match(/\bcc\b|\bcaracoroa\b/)) CaraCoroa(mensagem);
-		else if (comando.match(/\bh\b|\bhelp\b/)) Help(mensagem);
-		else if (comando.match(/\bj\b|\bjokenpo\b/)) Jokenpo(mensagem);
-		else if (comando.match(/\br\b|\broll\b/)) Roll(mensagem);
-		else if (comando.match(/\bo\b|\bout\b/)) Out(mensagem);
+		if (comando.match(/^(\bcc\b|\bcaracoroa\b)/)) CaraCoroa(mensagem);
+		else if (comando.match(/^(\bh\b|\bhelp\b)/)) Help(mensagem);
+		else if (comando.match(/^(\bj\b|\bjokenpo\b)/)) Jokenpo(mensagem);
+		else if (comando.match(/^(\br\b|\broll\b)/)) Roll(mensagem);
+		else if (comando.match(/^(\bo\b|\bout\b)/)) Out(mensagem);
+		else if (comando.match(/^(\bli\b|\bloremipsum\b)/)) LoremIpsum(mensagem);
+
 	}
 	// reage com o emote 😈 quando a mensagem contém ">:)"
 	Assinatura(mensagem);

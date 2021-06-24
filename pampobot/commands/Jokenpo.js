@@ -7,7 +7,7 @@ module.exports =
         let predefinido;
 		if (mensagem.content.startsWith('>jokenpo')) predefinido = mensagem.content.slice(9).split(/\s+/g);
         else predefinido = mensagem.content.slice(3).trim().split(/\s+/g);
-        console.log(predefinido);
+        
         if (predefinido[0].toLowerCase().match(/\bpedra\b|\bpapel\b|\btesoura\b/))
         {
             let user;
