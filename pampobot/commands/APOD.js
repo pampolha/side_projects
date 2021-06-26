@@ -1,3 +1,4 @@
+require('dotenv').config();
 const axios = require('axios').default;
 const Discord = require('discord.js');
 module.exports =
@@ -6,7 +7,7 @@ module.exports =
     {
         mensagem.channel.startTyping();
         
-        axios.get('https://api.nasa.gov/planetary/apod?api_key=HG6H36dSnYiVOj76N0eDU9YULnvMseAC6wvIj3nz')
+        axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_KEY}`)
         .then(apod =>
             {   
                 const author = apod.data.copyright;
@@ -15,7 +16,7 @@ module.exports =
                 const img = apod.data.hdurl;
 
                 const embed = new Discord.MessageEmbed()
-                .setAuthor('Imagem astrológica do dia!')
+                .setAuthor('Imagem astronômica do dia! 🖖')
                 .setTitle(`${title}`)
                 .setDescription(`${explanation}`)  
                 .setImage(`${img}`)

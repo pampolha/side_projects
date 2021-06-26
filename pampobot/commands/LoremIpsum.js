@@ -12,7 +12,11 @@ module.exports =
                 else if (arg[2] !== undefined && arg[2].toLowerCase().trim() === 't') return mensagem.channel.send(`> *${get.data.trim()}*`);
                 else return mensagem.channel.send(`> *${get.data.substring(57).trim()}*`);
             })
-            .catch(err => console.error(err));
+            .catch(err => 
+                {
+                    console.error(err);
+                    mensagem.channel.send('Ops! *Parece que algo deu errado ao tentar pegar as informações...*');
+                });
             mensagem.channel.stopTyping();
     },
 };

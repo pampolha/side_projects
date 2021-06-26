@@ -84,19 +84,19 @@ module.exports =
             const _bot = mao(bot);
             if (_resultado === 0)
             {
-                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** Empate.`);
+                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** Empate.`);
             }
             else if (_resultado === 1 || _resultado === -2)
             {
                 const antigo = fs.readFileSync('data/jokenpoWins.txt', 'utf-8');
                 const atual = (parseInt(antigo) + 1).toString(10);
                 fs.writeFileSync('data/jokenpoWins.txt', atual);
-                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** ***EU VENCI!***\n` + 
+                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** ***EU VENCI!***\n` + 
                 `> *Meu número de vitórias agora é:*  **${fs.readFileSync('data/jokenpoWins.txt')}!**`);
             }
             else
             {
-                c_mensagem.reply(`você jogou: **${_user}!**, e eu joguei: **${_bot}!** *e-eu perdi?!*`);
+                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** *e-eu perdi?!*`);
             }
         }
     },
