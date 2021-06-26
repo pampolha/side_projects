@@ -19,6 +19,7 @@ const { Jokenpo } = require('./commands/Jokenpo');
 const { Roll } = require('./commands/Roll');
 const { Out } = require('./commands/Out');
 const { LoremIpsum } = require('./commands/LoremIpsum');
+const { APOD } = require('./commands/APOD');
 
 // usando o prefixo como uma variável pra facilitar a manutenção
 const prefix = '>';
@@ -54,7 +55,7 @@ client.on('message', mensagem =>
 		else if (comando.match(/^(\br\b|\broll\b)/)) Roll(mensagem);
 		else if (comando.match(/^(\bo\b|\bout\b)/)) Out(mensagem);
 		else if (comando.match(/^(\bli\b|\bloremipsum\b)/)) LoremIpsum(mensagem);
-
+		else if (comando.match(/^(\bapod\b)/)) APOD(mensagem);
 	}
 	// reage com o emote 😈 quando a mensagem contém ">:)"
 	Assinatura(mensagem);

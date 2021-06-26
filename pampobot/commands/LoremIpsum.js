@@ -3,6 +3,7 @@ module.exports =
 {
     LoremIpsum(mensagem)
     {
+        mensagem.channel.startTyping();
         const arg = mensagem.content.split(/\s+/g);
         axios.default.get('https://loripsum.net/api/1/medium/plaintext')
         .then(get =>
@@ -12,5 +13,6 @@ module.exports =
                 else return mensagem.channel.send(`> *${get.data.substring(57).trim()}*`);
             })
             .catch(err => console.error(err));
+            mensagem.channel.stopTyping();
     },
 };
