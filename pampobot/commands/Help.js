@@ -10,7 +10,7 @@ module.exports =
             '**>Jokenpo**: Vou jogar jokenpo com você quando você usar: `>jokenpo`, `>j` |*mão de escolha*|!\n' +
             '**>Lorem Ipsum**: Vou escrever um parágrafo aleatório do tipo Lorem Ipsum quando você usar: `>loremipsum`, `>li` |*t (para incluir o início padrão Lorem Ipsum)*| !\n' +
             '**>APOD**: Receba o APOD (Astronomical Picture Of the Day) da NASA usando: `>apod` !\n' +
-            '**>Moticação**: Vou tentar te motivar se você usar: `>m`, `>motivacao` !\n' +
+            '**>Motivação**: Vou tentar te motivar se você usar: `>m`, `>motivacao` !\n' +
             '\n> *converse com o dev! -> pampolha#0007*');
     },
 };
