@@ -19,8 +19,9 @@ module.exports =
                 .setAuthor('Imagem astronômica do dia! 🖖')
                 .setTitle(`${title}`)
                 .setDescription(`${explanation}`)  
-                .setImage(`${img}`)
-                .setFooter(`Foto por: ${author}`);
+                .setImage(`${img}`);
+
+                if (author !== undefined) embed.setFooter(`Foto por: ${author}`);
 
                 mensagem.channel.send(embed);
             })
