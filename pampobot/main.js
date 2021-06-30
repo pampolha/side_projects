@@ -57,7 +57,9 @@ client.on('message', mensagem =>
 		else if (comando.match(/^(\bo\b|\bout\b)/)) Out(mensagem);
 		else if (comando.match(/^(\bli\b|\bloremipsum\b)/)) LoremIpsum(mensagem);
 		else if (comando.match(/^(\bapod\b)/)) APOD(mensagem);
-		else if (comando.match(/^(\bm\b|\bmotivacao\b)/)) Motivacao(mensagem);
+		else if (comando.match(/^(\bm\b|\bmotivação\b)/)) Motivacao(mensagem);
+
+		mensagem.channel
 	}
 	// reage com o emote 😈 quando a mensagem contém ">:)"
 	Assinatura(mensagem);

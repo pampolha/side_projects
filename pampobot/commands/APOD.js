@@ -13,17 +13,25 @@ module.exports =
                 const author = apod.data.copyright;
                 const title = apod.data.title;
                 const explanation = apod.data.explanation;
-                const img = apod.data.hdurl;
+                const media = apod.data.media_type === 'image' ? apod.data.hdurl : apod.data.url;
 
                 const embed = new Discord.MessageEmbed()
                 .setAuthor('Imagem astronômica do dia! 🖖')
-                .setTitle(`${title}`)
-                .setDescription(`${explanation}`)  
-                .setImage(`${img}`);
-
-                if (author !== undefined) embed.setFooter(`Foto por: ${author}`);
-
-                mensagem.channel.send(embed);
+                .setTitle(title)
+                .setDescription(explanation);
+                
+                if (media === apod.data.hdurl)
+                {
+                    embed.setImage(media);
+                    if (author !== undefined) embed.setFooter(`Foto por: ${author}`);
+                    mensagem.channel.send(embed);
+                } 
+                else 
+                {
+                    embed.setFooter('A "imagem" de hoje na verdade é um vídeo! O link vai estar logo abaixo.');
+                    mensagem.channel.send(embed);
+                    mensagem.channel.send(media);
+                }
             })
             .catch(err => 
                 {
