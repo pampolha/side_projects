@@ -3,24 +3,8 @@ require('dotenv').config();
 // a variável discord vai ser o meu ponto de entrada pra instanciar objetos do módulo discord.js
 const Discord = require('discord.js');
 const client = new Discord.Client();
-// a função abaixo exporta todos os meus comandos automaticamente pro main
-require('fs').readdirSync(__dirname + '/commands').forEach(comando => 
-{
-	if (comando.match(/\.js$/) !== null && comando !== 'index.js') 
-	{
-		const nome = comando.replace('.js', '');
-		exports[nome] = require('./commands/' + comando);
-	}
-});
-const { CaraCoroa } = require('./commands/CaraCoroa');
-const { Assinatura } = require('./commands/Assinatura');
-const { Help } = require('./commands/Help');
-const { Jokenpo } = require('./commands/Jokenpo');
-const { Roll } = require('./commands/Roll');
-const { Out } = require('./commands/Out');
-const { LoremIpsum } = require('./commands/LoremIpsum');
-const { APOD } = require('./commands/APOD');
-const { Motivacao } = require('./commands/Motivacao');
+const { checarComandos } = require('./functions/checarComando');
+const { Assinatura } = require('./functions/Assinatura');
 
 // usando o prefixo como uma variável pra facilitar a manutenção
 const prefix = '>';
@@ -47,21 +31,8 @@ client.on('message', mensagem =>
 	{
 		console.log(`${mensagem.author.username} disse: "${mensagem.content}" no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}"`);
 
-		const argumentos = mensagem.content.slice(prefix.length).split(/\s+/);
-		const comando = argumentos.shift().toLowerCase().trim();
-
-		if (comando.match(/^(\bcc\b|\bcaracoroa\b)/)) CaraCoroa(mensagem);
-		else if (comando.match(/^(\bh\b|\bhelp\b)/)) Help(mensagem);
-		else if (comando.match(/^(\bj\b|\bjokenpo\b)/)) Jokenpo(mensagem);
-		else if (comando.match(/^(\br\b|\broll\b)/)) Roll(mensagem);
-		else if (comando.match(/^(\bo\b|\bout\b)/)) Out(mensagem);
-		else if (comando.match(/^(\bli\b|\bloremipsum\b)/)) LoremIpsum(mensagem);
-		else if (comando.match(/^(\bapod\b)/)) APOD(mensagem);
-		else if (comando.match(/^(\bm\b|\bmotivação\b)/)) Motivacao(mensagem);
-
-		mensagem.channel
+		checarComandos(mensagem, prefix);
 	}
-	// reage com o emote 😈 quando a mensagem contém ">:)"
 	Assinatura(mensagem);
 });
 
