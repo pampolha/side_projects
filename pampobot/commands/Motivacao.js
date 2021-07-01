@@ -1,10 +1,10 @@
 const random = require('random');
-const affirmations = require('C:/Users/pampo/Estudos/Git/side_projects-main/pampobot/data/affirmations.js');
+const affirmations = require(process.env.pampobotDir + '/data/affirmations');
 module.exports =
 {
     Motivacao(mensagem)
     {
-        const escolha = random.int(0, 46);
+        const escolha = random.int(0, (affirmations.length - 1)); 
         return mensagem.reply(`**${affirmations[escolha]}**`);
     },
 };
