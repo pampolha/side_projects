@@ -31,8 +31,8 @@ client.on('ready', async () =>
 			ignoreBots: true,
 			disabledDefaultCommands: [
 				'help',
-				'command',
 				'language',
+				'command',
 				'prefix',
 				'requiredrole',
 				'channelonly',

@@ -25,7 +25,7 @@ module.exports =
     minArgs: 1,
     callback: ({ message, args, interaction }) =>
     {  
-        if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
         logSlash(message, interaction);
 
         let userNumber;

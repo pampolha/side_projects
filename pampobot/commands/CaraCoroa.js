@@ -12,6 +12,8 @@ module.exports =
     testOnly: false,
     callback: ({ message, interaction }) =>
     {
+        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
+
         let moeda;
 		const resultado = random.bool();
 		switch (resultado)
@@ -31,7 +33,6 @@ module.exports =
         }
         else
         {
-            if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
             logSlash(message, interaction);
             
             return `A face para cima foi: ***${moeda}!***`;

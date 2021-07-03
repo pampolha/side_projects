@@ -20,6 +20,8 @@ module.exports =
     expectedArgs: '[t]',
     callback: ({ message, args, interaction }) =>
     {
+        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
+
         if (message)
         {
             message.channel.startTyping();
@@ -40,7 +42,6 @@ module.exports =
         }
         else
         {
-            if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
             logSlash(message, interaction);
             
             return axios.get('https://loripsum.net/api/1/medium/plaintext')

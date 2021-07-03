@@ -16,9 +16,10 @@ module.exports =
     testOnly: false,
     callback: ({ message, interaction }) =>
     {
+        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
+
         if (!message)
         {
-            if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
             logSlash(message, interaction);
             
             return axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_KEY}`)

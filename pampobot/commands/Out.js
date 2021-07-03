@@ -12,7 +12,7 @@ module.exports =
     expectedArgs: '<mensagem>',
     callback: ({ message, text, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
         logSlash(message, interaction);
 
         const out = text;
