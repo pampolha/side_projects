@@ -1,58 +1,99 @@
 const random = require('random');
+
+const { blockDM } = require('../functions/blockDM');
+const { logSlash } = require('../functions/logSlash');
+
+const syntaxError = (msg = undefined) =>
+        {
+            const response = 'Número de lados/modificador inválido! Escolha um número inteiro de valor maior que 1 e menor que 2^53.' +
+            '\nCaso queira aplicar um modificador, escolha entre "+","-","x" ou "/" e depois um número que não seja 0, separando com espaços!';
+            if (msg) return msg.reply(response);
+            else return response;
+        };
+
+const natural = (dado, lado) =>
+{
+    if (dado === lado) return `\n*Natural **${lado}**!!*`;
+    else return '';
+};
+
 module.exports =
 {
-    Roll(mensagem)
+    name: 'roll',
+    aliases: ['r'],
+    description: 'Role um dado com até um modificador e veja o resultado!',
+    slash: 'both',
+    testOnly: false,
+    expectedArgs: '<lados> [operador] [modificador]',
+    callback: ({ message, args, interaction }) =>
     {
-        function invalido(_mensagem)
+        if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+        logSlash(message, interaction);
+
+        let lado;
+        if (!args[0])
         {
-            _mensagem.channel.send(`<@${_mensagem.author.id}> número de lados/modificador inválido!`);
+            lado = 6;
+        }
+        else
+        {
+            lado = parseInt(args[0].trim(), 10);
+            if (isNaN(lado) || lado <= 1 || lado >= Number.MAX_SAFE_INTEGER)
+            {
+                return syntaxError(message);
+            }
         }
 
-        const regex = /[+\-x/]/;
-        let bruto;
-        if (mensagem.content.startsWith('>roll')) bruto = mensagem.content.substring(6);
-        else bruto = mensagem.content.substring(3);
-		const separado = bruto.split(regex, 2);
-        const lado = parseInt(separado[0].trim(), 10);
-        if (lado <= 0)
-        {
-             return invalido(mensagem);
-        }
-        if (separado.length === 1)
-        {
-            if (isNaN(lado) === false)
-            {
-                const resultado = random.int(1, lado);
-                return mensagem.channel.send(`<@${mensagem.author.id}> rolou um **D${lado}**, e o resultado foi: ***${resultado}!***`);
-            }
-            return invalido(mensagem);
-        }
-        const mod = parseInt(separado[1].trim(), 10);
-        if (isNaN(lado) === true || isNaN(mod) === true)
-        {
-            return invalido(mensagem);
-        }
-        const operador = bruto.match(regex, 1);
-        if (operador === null)
-        {
-            return invalido(mensagem);
-        }
-        let resultado;
         const dado = random.int(1, lado);
+
+        let mod;
+        if (args[1] && args[2])
+        {
+            mod = parseInt(args[2].trim(), 10);
+            if (isNaN(mod) || mod === 0 || mod >= Number.MAX_SAFE_INTEGER)
+            {
+                return syntaxError(message);
+            }
+        } 
+        else
+        {
+            // eslint-disable-next-line no-lonely-if
+            if (message) 
+            {
+                return message
+                .reply(`Um **D${lado}** foi jogado, e o resultado foi: ***${dado}!***` + natural(dado, lado));
+            }
+            else 
+            {
+                return `Um **D${lado}** foi jogado, e o resultado foi: ***${dado}!***` + natural(dado, lado);
+            }
+        }  
+
+        const regex = /[+\-x/]/;
+        const operador = args[1].match(regex);
+        if (!operador)
+        {
+            return syntaxError(message);
+        }
+
+        let resultado;
         switch (operador[0].trim())
         {
             case '+':
-                resultado = dado + mod;
-                return mensagem.channel.send(`<@${mensagem.author.id}> rolou um **D${lado}+${mod}**, e o resultado foi: *(${dado}+${mod})* = ***${resultado}!***`);
+                resultado = `Um **D${lado}+${mod}** foi jogado, e o resultado foi: *(${dado}+${mod})* = ***${dado + mod}!***`; 
+                break;
             case '-':
-                resultado = dado - mod;
-                return mensagem.channel.send(`<@${mensagem.author.id}> rolou um **D${lado}-${mod}**, e o resultado foi: *(${dado}-${mod})* = ***${resultado}!***`);
-            case 'x':
-                resultado = dado * mod;
-                return mensagem.channel.send(`<@${mensagem.author.id}> rolou um **D${lado}x${mod}**, e o resultado foi: *(${dado}x${mod})* = ***${resultado}!***`);
+               resultado = `Um **D${lado}-${mod}** foi jogado, e o resultado foi: *(${dado}-${mod})* = ***${dado - mod}!***`;
+                break;
+               case 'x':
+                resultado = `Um **D${lado}x${mod}** foi jogado, e o resultado foi: *(${dado}x${mod})* = ***${dado * mod}!***`;
+                break;
             case '/':
-                resultado = dado / mod;
-                return mensagem.channel.send(`<@${mensagem.author.id}> rolou um **D${lado}/${mod}**, e o resultado foi: *(${dado}/${mod})* = ***${Math.floor(resultado)}!*** *(arredondado para baixo)*`);
+               resultado = `<Um **D${lado}/${mod}** foi jogado, e o resultado foi: *(${dado}/${mod})* = ***${Math.floor(dado / mod)}!*** *(arredondado para baixo)*`;
+               break;
         }
+
+        if (message) return message.reply(resultado + natural(dado, lado));
+        else return resultado + natural(dado, lado);
     },
 };

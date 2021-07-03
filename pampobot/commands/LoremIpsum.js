@@ -1,22 +1,60 @@
-const axios = require('axios');
+const { blockDM } = require('../functions/blockDM');
+const { logSlash } = require('../functions/logSlash');
+
+const axios = require('axios').default;
+
+const syntaxError = (msg = undefined) =>
+        {
+            const response = 'Argumento inválido! Insira "t" após o comando para obter um começo de parágrafo no padrão Lorem Ipsum.';
+            if (msg) return msg.reply(response);
+            else return response;
+        };
+
 module.exports =
 {
-    LoremIpsum(mensagem)
+    name: 'loremipsum',
+    aliases: ['li'],
+    description: 'Vou digitar um parágrafo aleatório com palavras do livro "De finibus bonorum et malorum", de Cícero.',
+    slash: 'both',
+    testOnly: false,
+    expectedArgs: '[t]',
+    callback: ({ message, args, interaction }) =>
     {
-        mensagem.channel.startTyping();
-        const arg = mensagem.content.split(/\s+/g);
-        axios.default.get('https://loripsum.net/api/1/medium/plaintext')
-        .then(get =>
-            {
-                if (arg[1] !== undefined && arg[1].toLowerCase().trim() === 't') return mensagem.channel.send(`> *${get.data.trim()}*`);
-                else if (arg[2] !== undefined && arg[2].toLowerCase().trim() === 't') return mensagem.channel.send(`> *${get.data.trim()}*`);
-                else return mensagem.channel.send(`> *${get.data.substring(57).trim()}*`);
-            })
+        if (message)
+        {
+            message.channel.startTyping();
+
+            axios.get('https://loripsum.net/api/1/medium/plaintext')
+            .then(li =>
+                {
+                    if (args[0] && args[0].toLowerCase() === 't') return message.channel.send(`> *${li.data.trim()}*`);
+                    else if (args[0] && args[0].toLowerCase() !== 't') return syntaxError(message);
+                    else return message.channel.send(`> *${li.data.substring(57).trim()}*`);
+                })
             .catch(err => 
                 {
                     console.error(err);
-                    mensagem.channel.send('Ops! *Parece que algo deu errado ao tentar pegar as informações...*');
+                    message.channel.send('Ops! *Parece que algo deu errado ao tentar pegar as informações...*');
                 });
-            mensagem.channel.stopTyping();
+            message.channel.stopTyping();
+        }
+        else
+        {
+            if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+            logSlash(message, interaction);
+            
+            return axios.get('https://loripsum.net/api/1/medium/plaintext')
+            .then(li =>
+                {
+                    if (args[0] && args[0].toLowerCase() === 't') return `> *${li.data.trim()}*`;
+                    else if (args[0] && args[0].toLowerCase() !== 't') return syntaxError;
+                    else return `> *${li.data.substring(57).trim()}*`;
+                })
+            .catch(err => 
+                {
+                    console.error(err);
+                    return 'Ops! *Parece que algo deu errado ao tentar pegar as informações...*';
+                });
+        }
     },
 };

@@ -1,44 +1,84 @@
 require('dotenv').config();
+
 const axios = require('axios').default;
+
 const Discord = require('discord.js');
+
+const { blockDM } = require('../functions/blockDM');
+const { logSlash } = require('../functions/logSlash');
+
 module.exports =
 {
-    APOD(mensagem)
+    name: 'apod',
+    aliases: ['nasa'],
+    description: 'Receba a imagem astronômica do dia providenciada pela NASA!',
+    slash: 'both',
+    testOnly: false,
+    callback: ({ message, interaction }) =>
     {
-        mensagem.channel.startTyping();
-        
-        axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_KEY}`)
-        .then(apod =>
-            {   
-                const author = apod.data.copyright;
-                const title = apod.data.title;
-                const explanation = apod.data.explanation;
-                const media = apod.data.media_type === 'image' ? apod.data.hdurl : apod.data.url;
+        if (!message)
+        {
+            if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+            logSlash(message, interaction);
+            
+            return axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_KEY}`)
+            .then(apod => 
+                {
+                    const embed = new Discord.MessageEmbed();
 
-                const embed = new Discord.MessageEmbed()
-                .setAuthor('Imagem astronômica do dia! 🖖')
-                .setTitle(title)
-                .setDescription(explanation);
-                
-                if (media === apod.data.hdurl)
-                {
-                    embed.setImage(media);
-                    if (author !== undefined) embed.setFooter(`Foto por: ${author}`);
-                    mensagem.channel.send(embed);
-                } 
-                else 
-                {
-                    embed.setFooter('A "imagem" de hoje na verdade é um vídeo! O link vai estar logo abaixo.');
-                    mensagem.channel.send(embed);
-                    mensagem.channel.send(media);
-                }
-            })
+                    embed.setAuthor('Imagem astronômica do dia! 🖖')
+                    .setTitle(apod.data.title)
+                    .setDescription(apod.data.explanation);
+                            
+                    if (apod.data.media_type === 'image')
+                    {
+                        embed.setImage(apod.data.hdurl);
+                        if (apod.data.copyright) embed.setFooter(`Foto por: ${apod.data.copyright}`);
+                    } 
+                    else 
+                    {
+                        embed.setFooter(`A "imagem" de hoje na verdade é um vídeo! Link: ${apod.data.url}`);
+                    }
+
+                    return embed;
+                })
             .catch(err => 
-                {
-                    console.error(err);
-                    mensagem.channel.send('Ops! *Parece que algo deu errado ao tentar pegar as informações...*');
-                });
+            {
+                return console.error(err);
+            });
+        }
+        else
+        {
+            message.channel.startTyping();
 
-        mensagem.channel.stopTyping();
+            axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_KEY}`)
+            .then(apod => 
+                {
+                    const embed = new Discord.MessageEmbed();
+
+                    embed.setAuthor('Imagem astronômica do dia! 🖖')
+                    .setTitle(apod.data.title)
+                    .setDescription(apod.data.explanation);
+                            
+                    if (apod.data.media_type === 'image')
+                    {
+                        embed.setImage(apod.data.hdurl);
+                        if (apod.data.copyright) embed.setFooter(`Foto por: ${apod.data.copyright}`);
+                    } 
+                    else 
+                    {
+                        embed.setFooter(`A "imagem" de hoje na verdade é um vídeo! Link: ${apod.data.url}`);
+                    }
+
+                    message.channel.stopTyping();
+
+                    return message.channel.send(embed);
+                })
+            .catch(err => 
+            {
+                console.error(err);
+                return message.channel.send('*Ops! Parece que algo deu errado ao tentar pegar as informações...*');
+            });
+        }
     },
 };

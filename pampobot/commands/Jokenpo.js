@@ -1,103 +1,99 @@
+const { logSlash } = require('../functions/logSlash');
+const { blockDM } = require('../functions/blockDM');
+
+require ('dotenv').config();
+
 const random = require('random');
+
 const fs = require('fs');
+
+const syntaxError = (msg = undefined) =>
+        {
+            const response = 'Argumento inválido! Escolha pedra, papel ou tesoura após o comando!';
+            if (msg) return msg.reply(response);
+            else return response;
+        };
+
 module.exports =
 {
-    Jokenpo(mensagem)
+    name: 'jokenpo',
+    aliases: ['j'],
+    description: 'Jogue uma disputa de pedra, papel e tesoura comigo!',
+    slash: 'both',
+    testOnly: false,
+    expectedArgs: '<escolha>',
+    minArgs: 1,
+    callback: ({ message, args, interaction }) =>
     {  
-        let predefinido;
-		if (mensagem.content.startsWith('>jokenpo')) predefinido = mensagem.content.slice(9).split(/\s+/g);
-        else predefinido = mensagem.content.slice(3).trim().split(/\s+/g);
-        
-        if (predefinido[0].toLowerCase().match(/\bpedra\b|\bpapel\b|\btesoura\b/))
+        if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+        logSlash(message, interaction);
+
+        let userNumber;
+        if (args[0])
         {
-            let user;
-            switch (predefinido[0].toLowerCase()) 
+            switch (args[0].toLowerCase()) 
             {
                 case 'pedra':
-                    user = 1;
+                    userNumber = 1;
                     break;
                 case 'papel':
-                    user = 2;
+                    userNumber = 2;
                     break;
                 case 'tesoura':
-                    user = 3;
+                    userNumber = 3;
                     break;
+                default:
+                    return syntaxError(message);
             }
-            return resultado(mensagem, user);
+        }
+        else
+        {
+            return syntaxError(message);
         }
 
-        mensagem.reply('*eu aceito o seu desafio...*\n' +
-        '**>digite "pedra", "papel" ou "tesoura" quando estiver pronto!**');
-        const filtro = msg => 
+        const mao = numero =>
         {
-            const teste = msg.content.toLowerCase().match(/\bpedra\b|\bpapel\b|\btesoura\b/);
-            switch (teste) {
-                case null:
-                case undefined:
-                    return false;
-                default:
-                    return true;
+            switch (numero) 
+            {
+                case 1:
+                    return 'pedra';
+                case 2:
+                    return 'papel';
+                case 3:
+                    return 'tesoura';
             }
         };
-        const coletor = mensagem.channel.createMessageCollector(filtro, { time: 10000 });
-        coletor.on('collect', _mensagem =>
-        {
-            if (_mensagem.author.id === mensagem.author.id)
-            {
-                const teste = _mensagem.content.toLowerCase().match(/\bpedra\b|\bpapel\b|\btesoura\b/);
-                let user;
-                switch (teste[0])
-                {
-                    case 'pedra':
-                        user = 1;
-                        break;
-                    case 'papel':
-                        user = 2;
-                        break;
-                    case 'tesoura':
-                        user = 3;
-                        break;
-                }
-                coletor.stop();
-                return resultado(_mensagem, user);
-            }
-        });
 
-        function resultado(c_mensagem, user)
-        {
-            const mao = numero =>
-            {
-                switch (numero) 
-                {
-                    case 1:
-                        return 'pedra';
-                    case 2:
-                        return 'papel';
-                    case 3:
-                        return 'tesoura';
-                }
-            };
+        const botNumber = random.int(1, 3);
+        const result = botNumber - userNumber;
 
-            const bot = random.int(1, 3);
-            const _resultado = bot - user;
-            const _user = mao(user);
-            const _bot = mao(bot);
-            if (_resultado === 0)
-            {
-                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** Empate.`);
-            }
-            else if (_resultado === 1 || _resultado === -2)
-            {
-                const antigo = fs.readFileSync('data/jokenpoWins.txt', 'utf-8');
-                const atual = (parseInt(antigo) + 1).toString(10);
-                fs.writeFileSync('data/jokenpoWins.txt', atual);
-                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** ***EU VENCI!***\n` + 
-                `> *Meu número de vitórias agora é:*  **${fs.readFileSync('data/jokenpoWins.txt')}!**`);
-            }
-            else
-            {
-                c_mensagem.reply(`você jogou: **${_user}**, e eu joguei: **${_bot}!** *e-eu perdi?!*`);
-            }
+        const botMao = mao(botNumber);
+        const userMao = mao(userNumber);
+
+        if (result === 0)
+        {
+            const empate = `você jogou: **${userMao}**, e eu joguei: **${botMao}!** Empate.`;
+            if (message) return message.reply(empate);
+            else return empate;
+        }
+        else if (result === 1 || result === -2)
+        {
+            const wins = process.env.pampobotDir + 'data/jokenpoWins.txt';
+            const antigo = fs.readFileSync(wins, 'utf-8');
+            const atual = (parseInt(antigo, 10) + 1).toString(10);
+            fs.writeFileSync(wins, atual);
+
+            const vitoria = `você jogou: **${userMao}**, e eu joguei: **${botMao}!** ***EU VENCI!***\n` + 
+            `> *Meu número de vitórias agora é:*  **${fs.readFileSync(wins)}!**`;
+
+            if (message) return message.reply(vitoria);
+            else return vitoria;
+        }
+        else
+        {
+            const derrota = `você jogou: **${userMao}**, e eu joguei: **${botMao}!** *e-eu perdi?!*`;
+            if (message) return message.reply(derrota);
+            else return derrota;
         }
     },
 };

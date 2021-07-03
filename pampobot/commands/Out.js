@@ -1,17 +1,33 @@
+const { blockDM } = require('../functions/blockDM');
+const { logSlash } = require('../functions/logSlash');
+
 module.exports =
 {
-    Out(mensagem)
+    name: 'out',
+    aliases: ['o'],
+    description: 'Vou tentar copiar a mensagem que você escrever!',
+    slash: 'both',
+    testOnly: false,
+    minArgs: 1,
+    expectedArgs: '<mensagem>',
+    callback: ({ message, text, interaction }) =>
     {
-        let out;
-        if (mensagem.content.startsWith('>out')) out = mensagem.content.substring(5);
-        else out = mensagem.content.substring(3);
-        
-        if (mensagem.deletable === true)
-        {
-            mensagem.delete()
-            .then(() => console.log(`pampobot apagou uma mensagem no canal "${mensagem.channel.name}" do servidor "${mensagem.guild.name}". Mensagem original: "${out}"`));
-        }
+        if (blockDM(message, interaction)) return console.log(`Comando bloquado na DM. Tentativa efetuada por: ${interaction.user.username}.`);
+        logSlash(message, interaction);
 
-        return mensagem.channel.send(out);
+        const out = text;
+
+        if (!out) return;
+
+        if (message && message.deletable === true)
+        {
+            message.delete()
+            .then(() => console.log(`pampobot apagou uma message no canal "${message.channel.name}" do servidor "${message.guild.name}". Mensagem original: "${out}"`));
+            return message.channel.send(out);
+        }
+        else
+        {
+            return out;
+        }
 	},
 };
