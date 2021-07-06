@@ -4,7 +4,7 @@ const axios = require('axios').default;
 
 const Discord = require('discord.js');
 
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 const { logSlash } = require('../functions/logSlash');
 
 module.exports =
@@ -16,11 +16,11 @@ module.exports =
     testOnly: false,
     callback: ({ message, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
 
         if (!message)
         {
-            logSlash(message, interaction);
+            logSlash(interaction);
             
             return axios.get(`https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_KEY}`)
             .then(apod => 

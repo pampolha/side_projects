@@ -1,11 +1,10 @@
-module.exports = 
+const assinatura = mensagem =>
 {
-    Assinatura(mensagem)
+    const regex = />:\)/;
+    if (mensagem.content.match(regex))
     {
-        const regex = />:\)/;
-        if (mensagem.content.match(regex))
-        {
-            return mensagem.react('😈');
-        }  
-    },
+        return mensagem.react('😈');
+    }  
 };
+
+module.exports = { assinatura };

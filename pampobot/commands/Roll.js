@@ -1,6 +1,6 @@
 const random = require('random');
 
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 const { logSlash } = require('../functions/logSlash');
 
 const syntaxError = (msg = undefined) =>
@@ -27,8 +27,8 @@ module.exports =
     expectedArgs: '<lados> [operador] [modificador]',
     callback: ({ message, args, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
-        logSlash(message, interaction);
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        logSlash(interaction);
 
         let lado;
         if (!args[0])

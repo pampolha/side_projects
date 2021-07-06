@@ -9,7 +9,7 @@ const client = new Discord.Client();
 const WOKCommands = require('wokcommands');
 
 // const { checarComandos } = require('./functions/checarComando');
-const { Assinatura } = require('./functions/assinatura');
+const { assinatura } = require('./functions/assinatura');
 
 // usando o prefixo como uma variável pra facilitar a manutenção
 const prefix = '>';
@@ -20,7 +20,7 @@ const testesID = '850829150160027698';
 // logando erros
 client.on('error', err => console.error(err));
 
-// quando o bot estiver no online, vai logar uma mensagem no console e setar um status personalizado
+// quando o bot estiver pronto, ele vai instanciar o handler do WOK, vai logar uma mensagem no console e setar um status personalizado
 client.on('ready', async () => 
 {
 	new WOKCommands(client,
@@ -61,8 +61,8 @@ client.on('message', mensagem =>
 	{
 		console.log(`${mensagem.author.username} disse: "${mensagem.content}" no servidor "${mensagem.guild.name}"`);
 	}
-
-	Assinatura(mensagem);
+	
+	assinatura(mensagem);
 });
 
 // login do bot com token

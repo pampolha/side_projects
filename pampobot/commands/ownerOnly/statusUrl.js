@@ -9,7 +9,7 @@ module.exports =
     callback: ({ text, client }) =>
     {
         if (!text) return;
-        else if (text === 'default') return client.user.setPresence({ status: 'online', activity: { name: client.user.presence.activities[0].name, type: client.user.presence.activities[0].type }, url: null });
-        else return client.user.setPresence({ status: 'online', activity: { name: client.user.presence.activities[0].name, type: client.user.presence.activities[0].type }, url: text });
+        else if (text === 'default') return client.user.setPresence({ status: 'online', activity: { name: client.user.presence.activities[0].name, type: 'STREAMING', url: null } });
+        else return client.user.setPresence({ status: 'online', activity: { name: client.user.presence.activities[0].name, type: 'STREAMING', url: text } });
     },
 };

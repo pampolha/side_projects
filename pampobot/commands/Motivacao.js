@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { logSlash } = require('../functions/logSlash');
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 
 const random = require('random');
 
@@ -15,8 +15,8 @@ module.exports =
     testOnly: false,
     callback: ({ message, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
-        logSlash(message, interaction);
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        logSlash(interaction);
 
         const escolha = random.int(0, (affirmations.length - 1)); 
         if (message) return message.reply(`**${affirmations[escolha]}**`);

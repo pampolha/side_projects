@@ -1,5 +1,5 @@
 const { logSlash } = require('../functions/logSlash');
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 
 const random = require('random');
 
@@ -12,7 +12,7 @@ module.exports =
     testOnly: false,
     callback: ({ message, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
 
         let moeda;
 		const resultado = random.bool();
@@ -33,7 +33,7 @@ module.exports =
         }
         else
         {
-            logSlash(message, interaction);
+            logSlash(interaction);
             
             return `A face para cima foi: ***${moeda}!***`;
         }

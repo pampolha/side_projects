@@ -1,5 +1,5 @@
 const { logSlash } = require('../functions/logSlash');
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 
 require ('dotenv').config();
 
@@ -25,8 +25,8 @@ module.exports =
     minArgs: 1,
     callback: ({ message, args, interaction }) =>
     {  
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
-        logSlash(message, interaction);
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        logSlash(interaction);
 
         let userNumber;
         if (args[0])

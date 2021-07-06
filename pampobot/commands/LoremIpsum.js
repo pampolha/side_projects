@@ -1,4 +1,4 @@
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 const { logSlash } = require('../functions/logSlash');
 
 const axios = require('axios').default;
@@ -20,7 +20,7 @@ module.exports =
     expectedArgs: '[t]',
     callback: ({ message, args, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
 
         if (message)
         {
@@ -42,7 +42,7 @@ module.exports =
         }
         else
         {
-            logSlash(message, interaction);
+            logSlash(interaction);
             
             return axios.get('https://loripsum.net/api/1/medium/plaintext')
             .then(li =>

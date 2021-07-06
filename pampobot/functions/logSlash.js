@@ -4,16 +4,15 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 client.login(process.env.BOT_TOKEN);
 
-const logSlash = (message, interaction) =>
+const logSlash = (interaction) =>
 {
-    if (!message)
-        { 
-            client.guilds.fetch(interaction.guild_id, true)
-            .then(guild => 
-                {
-                    console.log(`${interaction.member.user.username} usou: "/${interaction.data.name}" no servidor "${guild.name}"`);
-                });
-        }
+    if (!interaction) return;
+    
+    client.guilds.fetch(interaction.guild_id, true)
+    .then(guild => 
+        {
+            console.log(`${interaction.member.user.username} usou: "/${interaction.data.name}" no servidor "${guild.name}"`);
+        });
 };
 
 module.exports = { logSlash };

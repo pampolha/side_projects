@@ -1,9 +1,9 @@
 require('dotenv').config();
 
-const blockDM = (message, interaction) =>
+const checkDM = (message = undefined, interaction = undefined) =>
 {
     if (message && message.channel.type === 'dm') return true;
     else if (interaction && interaction.member === undefined) return true;
 };
 
-module.exports = { blockDM };
+module.exports = { checkDM };

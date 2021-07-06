@@ -1,4 +1,4 @@
-const { blockDM } = require('../functions/blockDM');
+const { checkDM } = require('../functions/checkDM');
 const { logSlash } = require('../functions/logSlash');
 
 module.exports =
@@ -12,8 +12,8 @@ module.exports =
     expectedArgs: '<mensagem>',
     callback: ({ message, text, interaction }) =>
     {
-        if (blockDM(message, interaction)) return console.log('Comando bloquado na DM.');
-        logSlash(message, interaction);
+        if (checkDM(message, interaction)) return console.log('Comando bloquado na DM.');
+        logSlash(interaction);
 
         const out = text;
 
