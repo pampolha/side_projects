@@ -1,2 +1,2 @@
 # side_projects
-Projetos que não fazem parte das minhas avaliações acadêmicas, e achei interessente o suficiente pra deixar aqui.
+Estudos de maior escala, qualidade e em estado mais avançado.
